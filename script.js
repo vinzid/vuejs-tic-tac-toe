@@ -37,19 +37,43 @@ Vue.component('Square', {
 Vue.component('Board', {
   data() {
     return {
-      status: `${nextLabel}X`,
       board: [
         [0, 1, 2],
         [3, 4, 5],
         [6, 7, 8]
-      ],
-      squares: Array(9).fill(null),
-      xIsNext: true
+      ]
+    }
+  },
+  props: ['squares'],
+  methods: {
+    handleClick(i) {
+      this.$emit('click', i);
+    }
+  },
+  template: `
+    <div>
+      <div class="board-row" v-for="(row, index) in board" :key="index">
+        <Square v-for="square in row" :key="square" :value="squares[square]" @click="handleClick(square)" />
+      </div>
+    </div>
+  `
+});
+
+Vue.component('Game', {
+  data() {
+    return {
+      history: [{
+        squares: Array(9).fill(null),
+      }],
+      xIsNext: true,
+      status: `${nextLabel}X`
     }
   },
   methods: {
     handleClick(i) {
-      const squares = this.squares.slice();
+      const history = this.history;
+      const current = history[history.length - 1]
+      const squares = current.squares.slice();
       if (calculateWinner(squares)) {
         alert('胜负已定！');
         return;
@@ -59,6 +83,9 @@ Vue.component('Board', {
         return
       }
       squares[i] = this.xIsNext ? 'X' : 'O';
+      history.push({
+        squares: squares
+      });
       this.squares = squares;
       const winner = calculateWinner(squares);
       if (winner) {
@@ -70,26 +97,13 @@ Vue.component('Board', {
     }
   },
   template: `
-    <div>
-      <div class="status">{{ status }}</div>
-      <div class="board-row" v-for="(row, index) in board" :key="index">
-        <Square v-for="square in row" :key="square" :value="squares[square]" @click="handleClick(square)" />
+    <div class="game">
+      <div class="game-board">
+        <Board :squares="history[history.length - 1].squares" @click="handleClick" />
       </div>
-    </div>
-  `
-});
-
-Vue.component('Game', {
-  template: `
-    <div id="app">
-      <div class="game">
-        <div class="game-board">
-          <Board />
-        </div>
-        <div class="game-info">
-          <div>{{ /* status */ }}</div>
-          <ol>{{ /* TODO */ }}</ol>
-        </div>
+      <div class="game-info">
+        <div>{{ status }}</div>
+        <ol>{{ /* TODO */ }}</ol>
       </div>
     </div>
   `
