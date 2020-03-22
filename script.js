@@ -1,3 +1,5 @@
+let nextLabel = '下一个选手：'
+
 Vue.component('Square', {
   props: ['value'],
   methods: {
@@ -15,20 +17,27 @@ Vue.component('Square', {
 Vue.component('Board', {
   data() {
     return {
-      status: '下一个选手：X',
+      status: `${nextLabel}X`,
       board: [
         [0, 1, 2],
         [3, 4, 5],
         [6, 7, 8]
       ],
       squares: Array(9).fill(null),
+      xIsNext: true
     }
   },
   methods: {
     handleClick(i) {
       const squares = this.squares.slice();
-      squares[i] = 'X';
+      if (squares[i]){
+        alert('此位置已被占');
+        return
+      }
+      squares[i] = this.xIsNext ? 'X' : 'O';
       this.squares = squares;
+      this.xIsNext = !this.xIsNext;
+      this.status = `${nextLabel}${this.xIsNext ? 'X' : 'O'}`
     }
   },
   template: `
