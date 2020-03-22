@@ -1,4 +1,4 @@
-let nextLabel = '下一个选手：'
+const nextLabel = '下一个选手：';
 
 function calculateWinner(squares) {
   const lines = [
@@ -65,13 +65,14 @@ Vue.component('Game', {
       history: [{
         squares: Array(9).fill(null),
       }],
+      stepNumber: 0,
       xIsNext: true,
       status: `${nextLabel}X`
     }
   },
   methods: {
     handleClick(i) {
-      const history = this.history;
+      const history = this.history.slice(0, this.stepNumber + 1);
       const current = history[history.length - 1]
       const squares = current.squares.slice();
       if (calculateWinner(squares)) {
@@ -83,9 +84,10 @@ Vue.component('Game', {
         return
       }
       squares[i] = this.xIsNext ? 'X' : 'O';
-      history.push({
+      this.history = history.concat([{
         squares: squares
-      });
+      }]);
+      this.stepNumber = history.length;
       this.squares = squares;
       const winner = calculateWinner(squares);
       if (winner) {
@@ -93,17 +95,30 @@ Vue.component('Game', {
         return;
       }
       this.xIsNext = !this.xIsNext;
-      this.status = `${nextLabel}${this.xIsNext ? 'X' : 'O'}`
+      this.status = `${nextLabel}${this.xIsNext ? 'X' : 'O'}`;
+    },
+    jumpTo(step) {
+      if(step === this.stepNumber){
+        alert('已在' + (0 === step ? '最开始' : `步骤#${step}！`));
+        return;
+      }
+      this.stepNumber = step;
+      this.xIsNext = (step % 2) === 0;
+      this.status = `${nextLabel}${this.xIsNext ? 'X' : 'O'}`;
     }
   },
   template: `
     <div class="game">
       <div class="game-board">
-        <Board :squares="history[history.length - 1].squares" @click="handleClick" />
+        <Board :squares="history[this.stepNumber].squares" @click="handleClick" />
       </div>
       <div class="game-info">
         <div>{{ status }}</div>
-        <ol>{{ /* TODO */ }}</ol>
+        <ol>
+          <li v-for="(squares, index) in history" :key="index" :class="{'move-on': index === stepNumber}">
+            <button @click="jumpTo(index)">{{ 0 === index ? '回到最开始' : '回到步骤#' + index }}</button>
+          </li>
+        </ol>
       </div>
     </div>
   `

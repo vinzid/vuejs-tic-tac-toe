@@ -40,3 +40,13 @@ ol, ul {
 .game-info {
   margin-left: 20px;
 }
+.game-info button{
+  outline: none;
+  border-radius: 5px;
+}
+.game-info button:hover{
+  border-color: #666;
+}
+.move-on button{
+  border-color: #000;
+}
