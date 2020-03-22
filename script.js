@@ -1,13 +1,8 @@
 Vue.component('Square', {
-  //props: ['value'],
-  data() {
-    return {
-      value: null
-    }
-  },
+  props: ['value'],
   methods: {
     setValue() {
-      this.value = 'X';
+      this.$emit('click');
     }
   },
   template: `
@@ -25,14 +20,22 @@ Vue.component('Board', {
         [0, 1, 2],
         [3, 4, 5],
         [6, 7, 8]
-      ]
+      ],
+      squares: Array(9).fill(null),
+    }
+  },
+  methods: {
+    handleClick(i) {
+      const squares = this.squares.slice();
+      squares[i] = 'X';
+      this.squares = squares;
     }
   },
   template: `
     <div>
       <div class="status">{{ status }}</div>
       <div class="board-row" v-for="(row, index) in board" :key="index">
-        <Square v-for="square in row" :key="square" :value="square" />
+        <Square v-for="square in row" :key="square" :value="squares[square]" @click="handleClick(square)" />
       </div>
     </div>
   `
