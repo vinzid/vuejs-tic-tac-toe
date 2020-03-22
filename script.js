@@ -1,7 +1,8 @@
 Vue.component('Square', {
+  props: ['value'],
   template: `
     <button class="square">
-      {{ /* TODO */ }}
+      {{ value }}
     </button>
   `
 })
@@ -21,7 +22,7 @@ Vue.component('Board', {
     <div>
       <div class="status">{{ status }}</div>
       <div class="board-row" v-for="(row, index) in board" :key="index">
-        <Square v-for="square in row" :key="square" />
+        <Square v-for="square in row" :key="square" :value="square" />
       </div>
     </div>
   `
