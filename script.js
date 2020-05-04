@@ -1,4 +1,4 @@
-const nextLabel = '下一个选手：';
+const nextLabel = 'Next player 下一个选手：';
 
 function calculateWinner(squares) {
   const lines = [
@@ -76,11 +76,11 @@ Vue.component('Game', {
       const current = history[history.length - 1]
       const squares = current.squares.slice();
       if (calculateWinner(squares)) {
-        alert('胜负已定！');
+        alert('Winner was determined!\n胜负已定！');
         return;
       }
       if (squares[i]){
-        alert('此位置已被占!');
+        alert('Place was taken!\n此位置已被占！');
         return
       }
       squares[i] = this.xIsNext ? 'X' : 'O';
@@ -91,7 +91,7 @@ Vue.component('Game', {
       this.squares = squares;
       const winner = calculateWinner(squares);
       if (winner) {
-        this.status = '获胜者：' + winner;
+        this.status = 'Winner 获胜者：' + winner;
         return;
       }
       this.xIsNext = !this.xIsNext;
@@ -99,7 +99,7 @@ Vue.component('Game', {
     },
     jumpTo(step) {
       if(step === this.stepNumber){
-        alert('已在' + (0 === step ? '最开始' : `步骤#${step}！`));
+        alert('已在' + (0 === step ? '最开始' : `步骤#${step}！`) + '\nAlready at ' + (0 === step ? 'Beginning' : `Step#${step}！`));
         return;
       }
       this.stepNumber = step;
@@ -116,7 +116,7 @@ Vue.component('Game', {
         <div>{{ status }}</div>
         <ol>
           <li v-for="(squares, index) in history" :key="index" :class="{'move-on': index === stepNumber}">
-            <button @click="jumpTo(index)">{{ 0 === index ? '回到最开始' : '回到步骤#' + index }}</button>
+            <button @click="jumpTo(index)">{{ 0 === index ? 'Go to start 回到最开始' : 'Go to move 回到步骤#' + index }}</button>
           </li>
         </ol>
       </div>
